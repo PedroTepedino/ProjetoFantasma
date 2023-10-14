@@ -46,8 +46,9 @@ is.na(vendas$Price) %>% sum()
 
 # vendas exeto onde os precos sao NA
 vendas_price_na <- filter(vendas, !is.na(vendas$Price))
+vendas_price_na <- filter(vendas_price_na, !is.na(vendas_price_na$Category))
 
-# faturamentos totais
+# faturamento total
 vendas_price_na$Price %>% sum()
 
 # total por categoria
@@ -55,63 +56,43 @@ vendas_price_na %>%
   group_by(Category) %>%
   summarize(total = sum(Price))
 
-# faturamento total por mes
-faturamento_total_mes <-
-  vendas_price_na %>%
-  group_by(month = floor_date(Data.Venda, "month")) %>%
-  summarize(total = sum(Price))
-
- # faturamento total por mes por categoria
-faturamento_total_mes_categoria <-
-vendas_price_na %>%
-  group_by(Category, month = floor_date(Data.Venda, "month")) %>%
-  summarize(total = sum(Price))
-
-# faturamento acumulado total por mes
-faturamento_acumulado_total_mes <- 
-vendas_price_na %>%
-  group_by(month = floor_date(Data.Venda, "month")) %>%
-  summarize(total = sum(Price)) %>%
-  filter(!is.na(month)) %>%
-  mutate(accumulative = cumsum(total))
-  
-# faturamento acumulado por categoria por mes
-faturamento_acumulado_categoria_mes <-
+# faturamento total por mes por categoria
+faturamento_categoria <-
 vendas_price_na %>%
   group_by(Category, month = floor_date(Data.Venda, "month")) %>%
   summarize(total = sum(Price)) %>%
+  filter(!is.na(Category))
+
+# faturamento acumulado
+faturamento_categoria <-
+  faturamento_categoria %>%
   filter(!is.na(month)) %>%
-  filter(!is.na(Category)) %>%
   mutate(accumulative = cumsum(total)) 
+
+# media e desvio padrao do faturamento por categoria
+faturamento_categoria %>%
+  group_by(Category) %>%
+  summarise(mean = mean(total), sd = sd(total))
+
+# media e desvio padrao do faturamento por mes
+faturamento_categoria %>%
+  group_by(month) %>%
+  summarise(mean = mean(total), sd = sd(total))
 
 
 # Plots
-ggplot(faturamento_total_mes) +
-  aes(x=month , y=total , group=1) +
-  geom_line(linewidth=1,colour="#A11D21") + 
-  geom_point(colour="#A11D21", size=2) +
-  labs(x="Mes", y="Faturamento Mensal") +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
-  theme_estat()
-
-ggplot(faturamento_acumulado_total_mes) +
-  aes(x=month , y=accumulative, group=1) +
-  geom_line(linewidth=1,colour="#A11D21") + 
-  geom_point(colour="#A11D21", size=2) +
-  labs(x="Mes", y="Faturamento Mensal") +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
-  theme_estat()
-
-ggplot(faturamento_total_mes_categoria) +
+ggplot(faturamento_categoria) +
   aes(x=month, y=total, group=Category, colour=Category) +
+  geom_line(linewidth=1) +
+  labs(x="Mes", y="Faturamento Mensal", colour="Categoria") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+  theme_estat()
+ggsave("faturamento_mes_categoria.pdf", width = 158, height = 93, units = "mm")
+
+ggplot(faturamento_categoria) +
+  aes(x=month, y=accumulative, group=Category, colour=Category) +
   geom_line(linewidth=1) +
   labs(x="Mes", y="Faturamento Mensal") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b") +
   theme_estat()
-
-ggplot(faturamento_total_mes_categoria) +
-  aes(x=month, y=total, group=Category, colour=Category) +
-  geom_line(linewidth=1) +
-  labs(x="Mes", y="Faturamento Mensal") +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
-  theme_estat()
+ggsave("faturamento_mes_categoria_acumulado.pdf", width = 158, height = 93, units = "mm")
