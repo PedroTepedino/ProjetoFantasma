@@ -36,7 +36,7 @@ vendas_raw <- read.csv("vendas.csv")
 devolucao_raw <- read.csv("devolucao.csv")
 
 # remove colunas que estao duplicadas
-vendas <- select(vendas_raw, -c(X, ...1.x, ...1.y, Motivo.devoluÃ.Ã.o))
+vendas <- select(vendas_raw, -c(X, ...1.x, ...1.y, Motivo.devolução))
 # set data collumn
 vendas$Data.Venda <- mdy(vendas$Data.Venda)
 
@@ -58,19 +58,19 @@ vendas_price_na %>%
 # faturamento total por mes
 faturamento_total_mes <-
   vendas_price_na %>%
-  group_by(month = month(floor_date(Data.Venda, "month"))) %>%
+  group_by(month = floor_date(Data.Venda, "month")) %>%
   summarize(total = sum(Price))
 
-# faturamento total por mes por categoria
+ # faturamento total por mes por categoria
 faturamento_total_mes_categoria <-
 vendas_price_na %>%
-  group_by(Category, month = month(floor_date(Data.Venda, "month"))) %>%
+  group_by(Category, month = floor_date(Data.Venda, "month")) %>%
   summarize(total = sum(Price))
 
 # faturamento acumulado total por mes
 faturamento_acumulado_total_mes <- 
 vendas_price_na %>%
-  group_by(month = month(floor_date(Data.Venda, "month"))) %>%
+  group_by(month = floor_date(Data.Venda, "month")) %>%
   summarize(total = sum(Price)) %>%
   filter(!is.na(month)) %>%
   mutate(accumulative = cumsum(total))
@@ -78,7 +78,7 @@ vendas_price_na %>%
 # faturamento acumulado por categoria por mes
 faturamento_acumulado_categoria_mes <-
 vendas_price_na %>%
-  group_by(Category, month = month(floor_date(Data.Venda, "month"))) %>%
+  group_by(Category, month = floor_date(Data.Venda, "month")) %>%
   summarize(total = sum(Price)) %>%
   filter(!is.na(month)) %>%
   filter(!is.na(Category)) %>%
@@ -91,6 +91,7 @@ ggplot(faturamento_total_mes) +
   geom_line(linewidth=1,colour="#A11D21") + 
   geom_point(colour="#A11D21", size=2) +
   labs(x="Mes", y="Faturamento Mensal") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
   theme_estat()
 
 ggplot(faturamento_acumulado_total_mes) +
@@ -98,6 +99,19 @@ ggplot(faturamento_acumulado_total_mes) +
   geom_line(linewidth=1,colour="#A11D21") + 
   geom_point(colour="#A11D21", size=2) +
   labs(x="Mes", y="Faturamento Mensal") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
   theme_estat()
 
-  
+ggplot(faturamento_total_mes_categoria) +
+  aes(x=month, y=total, group=Category, colour=Category) +
+  geom_line(linewidth=1) +
+  labs(x="Mes", y="Faturamento Mensal") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+  theme_estat()
+
+ggplot(faturamento_total_mes_categoria) +
+  aes(x=month, y=total, group=Category, colour=Category) +
+  geom_line(linewidth=1) +
+  labs(x="Mes", y="Faturamento Mensal") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+  theme_estat()
