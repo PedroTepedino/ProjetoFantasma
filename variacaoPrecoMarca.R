@@ -16,9 +16,13 @@ vendas %>%
 
 hist(vendas$Price)
 
-vendas %>%
-  filter(!is.na(Price)) %>%
-  filter(!is.na(Brand)) %>%
-  filter(Brand == Adidas) %>%
-  group_by(Brand) %>%
-  hist(Price)
+count(vendas, Brand)
+for ( brand in unique(vendas$Brand))
+{
+  hist(filter(vendas, !is.na(Price), !is.na(Brand), Brand == brand)$Price)
+}
+# Todos os precos parecem normalmente distribuidos pelos histogramas
+# TODO: Talvez fazer teste de normalidade depois
+
+
+
