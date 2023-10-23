@@ -41,3 +41,5 @@ vendas <- select(vendas_raw, -c(X, ...1.x, ...1.y, Motivo.devolução))
 vendas$Data.Venda <- mdy(vendas$Data.Venda)
 
 vendas <- vendas %>% distinct()
+
+vendas$Brand <- vendas$Brand %>% as.factor()
