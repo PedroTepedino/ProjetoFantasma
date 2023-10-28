@@ -46,6 +46,16 @@ vendas$Brand <- vendas$Brand %>% as.factor()
 
 vendas$Category <- vendas$Category %>% as.factor()
 vendas$Category <- vendas$Category %>% 
-  recode("Kids' Fashion" = "Moda Infantil",
-         "Men's Fashion" = "Moda Masculina",
-         "Women's Fashion" = "Moda Feminina")
+                    recode("Kids' Fashion" = "Moda Infantil",
+                           "Men's Fashion" = "Moda Masculina",
+                           "Women's Fashion" = "Moda Feminina")
+
+levels(vendas$Color)
+vendas$Color <- vendas$Color %>% as.factor()
+vendas$Color <- vendas$Color %>%
+                    recode("Black" = "Preto",
+                           "Blue" = "Azul",
+                           "Green" = "Verde",
+                           "Red" = "Vermelho",
+                           "White" = "Branco", 
+                           "Yellow" = "Amarelo")
