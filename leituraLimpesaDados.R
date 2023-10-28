@@ -43,3 +43,9 @@ vendas$Data.Venda <- mdy(vendas$Data.Venda)
 vendas <- vendas %>% distinct()
 
 vendas$Brand <- vendas$Brand %>% as.factor()
+
+vendas$Category <- vendas$Category %>% as.factor()
+vendas$Category <- vendas$Category %>% 
+  recode("Kids' Fashion" = "Moda Infantil",
+         "Men's Fashion" = "Moda Masculina",
+         "Women's Fashion" = "Moda Feminina")
