@@ -4,9 +4,17 @@ library(lubridate)
 ############################
 # tema da estat
 
-cores_estat <- c("#A11D21", "#003366", "#CC9900", "#663333", "#FF6600
-", "#CC9966", "#999966", "#006606", "#008091", "#041835", "#666666
-")
+cores_estat <- c("#A11D21", 
+                 "#003366", 
+                 "#CC9900", 
+                 "#663333", 
+                 "#FF6600", 
+                 "#CC9966", 
+                 "#999966", 
+                 "#006606", 
+                 "#008091", 
+                 "#041835", 
+                 "#666666")
 
 theme_estat <- function(...) {
   theme <- ggplot2:: theme_bw() +
@@ -44,6 +52,7 @@ vendas <- vendas %>% distinct()
 
 vendas$Brand <- vendas$Brand %>% as.factor()
 
+levels(vendas$Category)
 vendas$Category <- vendas$Category %>% as.factor()
 vendas$Category <- vendas$Category %>% 
                     recode("Kids' Fashion" = "Moda Infantil",
