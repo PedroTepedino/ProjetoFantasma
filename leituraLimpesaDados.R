@@ -41,7 +41,7 @@ theme_estat <- function(...) {
 ###############
 
 vendas_raw <- read.csv("vendas.csv")
-devolucao_raw <- read.csv("devolucao.csv")
+devolucao_raw <- read.csv("devolucao_atualizado.csv")
 
 # remove colunas que estao duplicadas
 vendas <- select(vendas_raw, -c(X, ...1.x, ...1.y, Motivo.devolução))
@@ -68,3 +68,15 @@ vendas$Color <- vendas$Color %>%
                            "Red" = "Vermelho",
                            "White" = "Branco", 
                            "Yellow" = "Amarelo")
+
+#devolucao
+devolucao <- devolucao_raw
+devolucao <- distinct(devolucao) 
+devolucao <- devolucao |> rename("Motivo.devolucao" = "Motivo.devolução")
+
+devolucao$Motivo.devolucao <- as.factor(devolucao$Motivo.devolucao)
+
+devolucao <- 
+  full_join(vendas, devolucao, by= c("Unique.ID")) %>%
+  select(Unique.ID, Brand, Motivo.devolucao) %>%
+  filter(!is.na(Brand))
