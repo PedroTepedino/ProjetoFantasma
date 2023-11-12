@@ -8,6 +8,7 @@ vendas %>%
 
 ggplot(vendas) +
   aes(x = Price, y = Rating) +
+  labs(x = "Preço", y = "Avaliação") + 
   geom_point(colour = "#A11D21", size = 3) + 
   theme_estat()
 
