@@ -1,5 +1,5 @@
 source("leituraLimpesaDados.R")
-library(scales)
+
 
 unique(vendas$Category)
 unique(vendas$Color)
